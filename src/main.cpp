@@ -4,38 +4,14 @@
 #include "Pokemon.h"
 #include "Skill.h"
 #include <iomanip>  // For std::setw
+#include <sstream>  // For std::ostringstream
 
-
-
-std::string removeCharacter(const std::string& input, char toRemove) {
-    std::string result;
-    for (char ch : input) {
-        if (ch != toRemove) {
-            result += ch;  // Add character to result if it's not the one to remove
-        }
-    }
-    return result;
-}
-
-// Helper function to truncate or pad strings to a fixed width
-    auto truncateOrPad = [](const std::string& input, size_t width) {
-        if (input.length() > width) {
-            return input.substr(0, width);  // Truncate if too long
-        } else {
-            return input + std::string(width - input.length(), ' ');  // Pad if too short
-        }
-    };
-
-
-
-
-
-
+// Function to print the battle page
 void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player1Turn,
                      const std::string& lastSkill1 = "-", const std::string& lastSkill2 = "-",
                      const std::string& effectiveness1 = "", const std::string& effectiveness2 = "") {
-    const int COL_WIDTH = 30; // Column width
-    const int TOTAL_WIDTH = 65; // Total width of the horizontal line
+    const int COL_WIDTH = 29;  // Adjusted Column width
+    const int TOTAL_WIDTH = 61;  // Adjusted Total width of the horizontal line
 
     // Clean up effectiveness strings (remove any extra newlines)
     std::string eff1 = effectiveness1;
@@ -43,10 +19,17 @@ void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player
     if (!eff1.empty() && eff1.back() == '\n') eff1.pop_back();
     if (!eff2.empty() && eff2.back() == '\n') eff2.pop_back();
 
+    // Use std::ostringstream to format effectiveness strings
+    std::ostringstream oss1, oss2;
+    oss1 << std::left << std::setw(COL_WIDTH) << eff1;
+    oss2 << std::left << std::setw(COL_WIDTH) << eff2;
+    eff1 = oss1.str();
+    eff2 = oss2.str();
+
     // Print table header
-    std::cout << "+---------------------------------------------------------------+\n";
-    std::cout << "| 2024-02 Object-Oriented Programming Pokemon Master            |\n";
-    std::cout << "+-------------------------------+-------------------------------+\n";
+    std::cout << "+" << std::string(TOTAL_WIDTH, '-') << "+\n";
+    std::cout << "| 2024-02 Object-Oriented Programming Pokemon Master          |\n";
+    std::cout << "+------------------------------+------------------------------+\n";
 
     // Player names and turn indicators
     std::cout << "| " << std::left << std::setw(COL_WIDTH)
@@ -65,7 +48,7 @@ void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player
               << std::left << std::setw(COL_WIDTH)
               << "HP: " + std::to_string(player2.getCurrentHP()) << "|\n";
 
-    std::cout << "+-------------------------------+-------------------------------+\n";
+    std::cout << "+------------------------------+------------------------------+\n";
 
     // Latest skills and effectiveness
     std::cout << "| " << std::left << std::setw(COL_WIDTH)
@@ -73,12 +56,9 @@ void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player
               << std::left << std::setw(COL_WIDTH)
               << "Latest Skill: " + lastSkill2 << "|\n";
 
-    std::cout << "| " << std::left << std::setw(COL_WIDTH)
-              << eff1 << "| "
-              << std::left << std::setw(COL_WIDTH)
-              << eff2 << "|\n";
+    std::cout << "| " << eff1 << "| " << eff2 << "|\n";
 
-    std::cout << "+-------------------------------+-------------------------------+\n";
+    std::cout << "+------------------------------+------------------------------+\n";
 
     // Skills section
     for (int i = 0; i < 4; ++i) {
@@ -89,13 +69,13 @@ void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player
                   << "(" + std::to_string(i) + ") " + player2.getSkillName(i) << "|\n";
 
         // Prefixes and field widths
-        const std::string typePrefix = "     - Type: ";
+        const std::string typePrefix = "    - Type: ";
         const int typeFieldWidth = COL_WIDTH - typePrefix.length();
 
-        const std::string damagePrefix = "     - Damage: ";
+        const std::string damagePrefix = "    - Damage: ";
         const int damageFieldWidth = COL_WIDTH - damagePrefix.length();
 
-        const std::string countPrefix = "     - Count: ";
+        const std::string countPrefix = "    - Count: ";
         const int countFieldWidth = COL_WIDTH - countPrefix.length();
 
         // Type
@@ -119,11 +99,8 @@ void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player
                   << "|\n";
     }
 
-    std::cout << "+-------------------------------+-------------------------------+\n";
+    std::cout << "+------------------------------+------------------------------+\n";
 }
-
-
-
 
 int main() {
     // Define all Pokémon
@@ -180,36 +157,34 @@ int main() {
     std::string lastSkill1 = "-", lastSkill2 = "-";
     std::string effectiveness1 = "", effectiveness2 = "";
 
-   while (!player1->isFainted() && !player2->isFainted()) {
-    printBattlePage(*player1, *player2, player1Turn, lastSkill1, lastSkill2, effectiveness1, effectiveness2);
+    while (!player1->isFainted() && !player2->isFainted()) {
+        printBattlePage(*player1, *player2, player1Turn, lastSkill1, lastSkill2, effectiveness1, effectiveness2);
 
-    std::cout << "Choose a skill (0~3): ";
-    int skillIndex;
-    std::cin >> skillIndex;
+        std::cout << "Choose a skill (0~3): ";
+        int skillIndex;
+        std::cin >> skillIndex;
 
-    if (player1Turn) {
-        lastSkill1 = player1->getSkillName(skillIndex);
-        effectiveness1 = player1->useSkill(skillIndex, *player2);
+        if (player1Turn) {
+            lastSkill1 = player1->getSkillName(skillIndex);
+            effectiveness1 = player1->useSkill(skillIndex, *player2);
 
-        // Print feedback
-        std::cout << player1->getName() << " used " << lastSkill1 << ".\n";
-        std::cout << effectiveness1 << "\n";
-    } else {
-        lastSkill2 = player2->getSkillName(skillIndex);
-        effectiveness2 = player2->useSkill(skillIndex, *player1);
+            // Print feedback
+            std::cout << player1->getName() << " used " << lastSkill1 << ".\n";
+            std::cout << effectiveness1 << "\n";
+        } else {
+            lastSkill2 = player2->getSkillName(skillIndex);
+            effectiveness2 = player2->useSkill(skillIndex, *player1);
 
-        // Print feedback
-        std::cout << player2->getName() << " used " << lastSkill2 << ".\n";
-        std::cout << effectiveness2 << "\n";
+            // Print feedback
+            std::cout << player2->getName() << " used " << lastSkill2 << ".\n";
+            std::cout << effectiveness2 << "\n";
+        }
+
+        player1Turn = !player1Turn;  // Switch turns
     }
 
-    player1Turn = !player1Turn;  // Switch turns
-}
-
-
-
     // Step 3: Print Result
-    std::cout << "===============================================================\n";
+    std::cout << std::string(63, '=') << "\n";
     if (player1->isFainted()) {
         std::cout << "Match Result: " << player2->getName() << " defeats " << player1->getName() << "\n";
     } else {
