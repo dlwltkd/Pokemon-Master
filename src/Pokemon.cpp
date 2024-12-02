@@ -81,11 +81,11 @@ std::string Pokemon::useSkill(int skillIndex, Pokemon& opponent) {
     // Translate effectiveness character into feedback string
     std::string feedback;
     if (effectivenessChar == 'O') {
-        feedback = "It was super effective.";
+        feedback = "It was super effective.\n";
     } else if (effectivenessChar == 'X') {
-        feedback = "It was not very effective.";
+        feedback = "It was not very effective.\n";
     } else {
-        feedback = "It was effective.";
+        feedback = "It was effective.\n";
     }
 
     return feedback;

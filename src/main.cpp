@@ -1,40 +1,129 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include "Pokemon.h"
 #include "Skill.h"
+#include <iomanip>  // For std::setw
 
-// Function to print the battle page
-void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player1Turn, const std::string& lastSkill1 = "-", const std::string& lastSkill2 = "-", const std::string& effectiveness1 = "", const std::string& effectiveness2 = "") {
-    std::cout << "+-------------------------------------------------------------+\n";
-    std::cout << "| 2024-02 Object-Oriented Programming Pokemon Master          |\n";
-    std::cout << "+------------------------------+------------------------------+\n";
-    std::cout << "| " << player1.getName();
-    if (player1Turn) std::cout << " (*)";
-    std::cout << std::string(30 - player1.getName().length() - (player1Turn ? 4 : 0), ' ') << "| " << player2.getName();
-    if (!player1Turn) std::cout << " (*)";
-    std::cout << std::string(30 - player2.getName().length() - (!player1Turn ? 4 : 0), ' ') << "|\n";
-    std::cout << "| Type: " << player1.getType() << std::string(24 - player1.getType().length(), ' ')
-              << "| Type: " << player2.getType() << std::string(24 - player2.getType().length(), ' ') << "|\n";
-    std::cout << "| HP: " << player1.getCurrentHP() << std::string(27 - std::to_string(player1.getCurrentHP()).length(), ' ')
-              << "| HP: " << player2.getCurrentHP() << std::string(27 - std::to_string(player2.getCurrentHP()).length(), ' ') << "|\n";
-    std::cout << "+------------------------------+------------------------------+\n";
-    std::cout << "| Latest Skill: " << lastSkill1 << std::string(17 - lastSkill1.length(), ' ')
-              << "| Latest Skill: " << lastSkill2 << std::string(17 - lastSkill2.length(), ' ') << "|\n";
-    std::cout << "| " << effectiveness1 << std::string(28 - effectiveness1.length(), ' ')
-              << "| " << effectiveness2 << std::string(28 - effectiveness2.length(), ' ') << "|\n";
-    std::cout << "+------------------------------+------------------------------+\n";
-    for (int i = 0; i < 4; ++i) {
-        std::cout << "| (" << i << ") " << player1.getSkillName(i) << std::string(28 - player1.getSkillName(i).length(), ' ')
-                  << "| (" << i << ") " << player2.getSkillName(i) << std::string(28 - player2.getSkillName(i).length(), ' ') << "|\n";
-        std::cout << "|     - Type: " << player1.getSkillType(i) << std::string(20 - player1.getSkillType(i).length(), ' ')
-                  << "|     - Type: " << player2.getSkillType(i) << std::string(20 - player2.getSkillType(i).length(), ' ') << "|\n";
-        std::cout << "|     - Damage: " << player1.getSkillDamage(i) << std::string(19 - std::to_string(player1.getSkillDamage(i)).length(), ' ')
-                  << "|     - Damage: " << player2.getSkillDamage(i) << std::string(19 - std::to_string(player2.getSkillDamage(i)).length(), ' ') << "|\n";
-        std::cout << "|     - Count: " << player1.getSkillRemaining(i) << "(" << player1.getSkillMax(i) << ")" << std::string(19 - std::to_string(player1.getSkillRemaining(i)).length() - std::to_string(player1.getSkillMax(i)).length() - 2, ' ')
-                  << "|     - Count: " << player2.getSkillRemaining(i) << "(" << player2.getSkillMax(i) << ")" << std::string(19 - std::to_string(player2.getSkillRemaining(i)).length() - std::to_string(player2.getSkillMax(i)).length() - 2, ' ') << "|\n";
+
+
+std::string removeCharacter(const std::string& input, char toRemove) {
+    std::string result;
+    for (char ch : input) {
+        if (ch != toRemove) {
+            result += ch;  // Add character to result if it's not the one to remove
+        }
     }
-    std::cout << "+------------------------------+------------------------------+\n";
+    return result;
 }
+
+// Helper function to truncate or pad strings to a fixed width
+    auto truncateOrPad = [](const std::string& input, size_t width) {
+        if (input.length() > width) {
+            return input.substr(0, width);  // Truncate if too long
+        } else {
+            return input + std::string(width - input.length(), ' ');  // Pad if too short
+        }
+    };
+
+
+
+
+
+
+void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player1Turn,
+                     const std::string& lastSkill1 = "-", const std::string& lastSkill2 = "-",
+                     const std::string& effectiveness1 = "", const std::string& effectiveness2 = "") {
+    const int COL_WIDTH = 30; // Column width
+    const int TOTAL_WIDTH = 65; // Total width of the horizontal line
+
+    // Clean up effectiveness strings (remove any extra newlines)
+    std::string eff1 = effectiveness1;
+    std::string eff2 = effectiveness2;
+    if (!eff1.empty() && eff1.back() == '\n') eff1.pop_back();
+    if (!eff2.empty() && eff2.back() == '\n') eff2.pop_back();
+
+    // Print table header
+    std::cout << "+---------------------------------------------------------------+\n";
+    std::cout << "| 2024-02 Object-Oriented Programming Pokemon Master            |\n";
+    std::cout << "+-------------------------------+-------------------------------+\n";
+
+    // Player names and turn indicators
+    std::cout << "| " << std::left << std::setw(COL_WIDTH)
+              << player1.getName() + (player1Turn ? " (*)" : "") << "| "
+              << std::left << std::setw(COL_WIDTH)
+              << player2.getName() + (!player1Turn ? " (*)" : "") << "|\n";
+
+    // Player types and HP
+    std::cout << "| " << std::left << std::setw(COL_WIDTH)
+              << "Type: " + player1.getType() << "| "
+              << std::left << std::setw(COL_WIDTH)
+              << "Type: " + player2.getType() << "|\n";
+
+    std::cout << "| " << std::left << std::setw(COL_WIDTH)
+              << "HP: " + std::to_string(player1.getCurrentHP()) << "| "
+              << std::left << std::setw(COL_WIDTH)
+              << "HP: " + std::to_string(player2.getCurrentHP()) << "|\n";
+
+    std::cout << "+-------------------------------+-------------------------------+\n";
+
+    // Latest skills and effectiveness
+    std::cout << "| " << std::left << std::setw(COL_WIDTH)
+              << "Latest Skill: " + lastSkill1 << "| "
+              << std::left << std::setw(COL_WIDTH)
+              << "Latest Skill: " + lastSkill2 << "|\n";
+
+    std::cout << "| " << std::left << std::setw(COL_WIDTH)
+              << eff1 << "| "
+              << std::left << std::setw(COL_WIDTH)
+              << eff2 << "|\n";
+
+    std::cout << "+-------------------------------+-------------------------------+\n";
+
+    // Skills section
+    for (int i = 0; i < 4; ++i) {
+        // Skill names
+        std::cout << "| " << std::left << std::setw(COL_WIDTH)
+                  << "(" + std::to_string(i) + ") " + player1.getSkillName(i) << "| "
+                  << std::left << std::setw(COL_WIDTH)
+                  << "(" + std::to_string(i) + ") " + player2.getSkillName(i) << "|\n";
+
+        // Prefixes and field widths
+        const std::string typePrefix = "     - Type: ";
+        const int typeFieldWidth = COL_WIDTH - typePrefix.length();
+
+        const std::string damagePrefix = "     - Damage: ";
+        const int damageFieldWidth = COL_WIDTH - damagePrefix.length();
+
+        const std::string countPrefix = "     - Count: ";
+        const int countFieldWidth = COL_WIDTH - countPrefix.length();
+
+        // Type
+        std::cout << "| " << typePrefix << std::left << std::setw(typeFieldWidth)
+                  << player1.getSkillType(i) << "| " << typePrefix
+                  << std::left << std::setw(typeFieldWidth)
+                  << player2.getSkillType(i) << "|\n";
+
+        // Damage
+        std::cout << "| " << damagePrefix << std::left << std::setw(damageFieldWidth)
+                  << std::to_string(player1.getSkillDamage(i)) << "| " << damagePrefix
+                  << std::left << std::setw(damageFieldWidth)
+                  << std::to_string(player2.getSkillDamage(i)) << "|\n";
+
+        // Count
+        std::cout << "| " << countPrefix << std::left << std::setw(countFieldWidth)
+                  << std::to_string(player1.getSkillRemaining(i)) + "(" + std::to_string(player1.getSkillMax(i)) + ")"
+                  << "| " << countPrefix
+                  << std::left << std::setw(countFieldWidth)
+                  << std::to_string(player2.getSkillRemaining(i)) + "(" + std::to_string(player2.getSkillMax(i)) + ")"
+                  << "|\n";
+    }
+
+    std::cout << "+-------------------------------+-------------------------------+\n";
+}
+
+
+
 
 int main() {
     // Define all Pokémon
