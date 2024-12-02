@@ -27,6 +27,12 @@ class Pokemon {
     int getCurrentHP() const;
     int getMaxHP() const;
     Skill getSkill(int index) const;
+    std::string getSkillName(int index) const;      // Get the name of a specific skill
+    std::string getSkillType(int index) const;      // Get the type of a specific skill
+    int getSkillDamage(int index) const;            // Get the damage of a specific skill
+    int getSkillRemaining(int index) const;         // Get the remaining uses of a specific skill
+    int getSkillMax(int index) const;               // Get the maximum allowed uses of a specific skill
+
 
     //Functions
     int useSkill(int skillIndex, Pokemon& opponent); //uses skill on opponent

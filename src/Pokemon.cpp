@@ -4,7 +4,7 @@
 
 //Constructor
 Pokemon::Pokemon(const std::string& name, const std::string type, int maxHP, const std::vector<Skill>& skills)
-    : pokemonName(name), pokemonType(type), maxHP(maxHP), pokemonSkills(skills) {}
+    : pokemonName(name), pokemonType(type), maxHP(maxHP), currentHP(maxHP), pokemonSkills(skills) {}
     
     //getters
     std::string Pokemon::getName() const {return pokemonName; }
@@ -14,9 +14,32 @@ Pokemon::Pokemon(const std::string& name, const std::string type, int maxHP, con
     Skill Pokemon::getSkill(int index) const {
     if (index < 0 || index >= pokemonSkills.size()) {
         throw std::out_of_range("Invalid skill index");
+        
     }
     return pokemonSkills[index];
 }
+    std::string Pokemon::getSkillName(int index) const {
+        return pokemonSkills[index].getName();
+}
+std::string Pokemon::getSkillType(int index) const {
+    return pokemonSkills[index].getType();
+}
+
+int Pokemon::getSkillDamage(int index) const {
+    return pokemonSkills[index].getBaseDamage();
+}
+
+int Pokemon::getSkillRemaining(int index) const {
+    return pokemonSkills[index].getRemainingTries();
+}
+
+int Pokemon::getSkillMax(int index) const {
+    return pokemonSkills[index].getMaxTries();
+}
+
+
+
+
 
 
     //Functions
