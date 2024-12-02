@@ -91,23 +91,33 @@ int main() {
     std::string lastSkill1 = "-", lastSkill2 = "-";
     std::string effectiveness1 = "", effectiveness2 = "";
 
-    while (!player1->isFainted() && !player2->isFainted()) {
-        printBattlePage(*player1, *player2, player1Turn, lastSkill1, lastSkill2, effectiveness1, effectiveness2);
+   while (!player1->isFainted() && !player2->isFainted()) {
+    printBattlePage(*player1, *player2, player1Turn, lastSkill1, lastSkill2, effectiveness1, effectiveness2);
 
-        std::cout << "Choose a skill (0~3): ";
-        int skillIndex;
-        std::cin >> skillIndex;
+    std::cout << "Choose a skill (0~3): ";
+    int skillIndex;
+    std::cin >> skillIndex;
 
-        if (player1Turn) {
-            effectiveness1 = player1->useSkill(skillIndex, *player2);
-            lastSkill1 = player1->getSkillName(skillIndex);
-        } else {
-            effectiveness2 = player2->useSkill(skillIndex, *player1);
-            lastSkill2 = player2->getSkillName(skillIndex);
-        }
+    if (player1Turn) {
+        lastSkill1 = player1->getSkillName(skillIndex);
+        effectiveness1 = player1->useSkill(skillIndex, *player2);
 
-        player1Turn = !player1Turn;
+        // Print feedback
+        std::cout << player1->getName() << " used " << lastSkill1 << ".\n";
+        std::cout << effectiveness1 << "\n";
+    } else {
+        lastSkill2 = player2->getSkillName(skillIndex);
+        effectiveness2 = player2->useSkill(skillIndex, *player1);
+
+        // Print feedback
+        std::cout << player2->getName() << " used " << lastSkill2 << ".\n";
+        std::cout << effectiveness2 << "\n";
     }
+
+    player1Turn = !player1Turn;  // Switch turns
+}
+
+
 
     // Step 3: Print Result
     std::cout << "===============================================================\n";

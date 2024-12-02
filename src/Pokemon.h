@@ -1,48 +1,42 @@
 #ifndef POKEMON_H
 #define POKEMON_H
 
-
 #include <string>
 #include <vector>
 #include "Skill.h"
 
-
-
 class Pokemon {
-    private: 
-    std::string pokemonName;
-    std::string pokemonType;
-    int maxHP;
-    int currentHP;
-    std::vector<Skill> pokemonSkills;
-    
-    
-    public:
-    //Constructor
-    Pokemon(const std::string& name, const std::string type, int maxHP, const std::vector<Skill>& skills);
-    
-    //getters
-    std::string getName() const;
-    std::string getType() const;
-    int getCurrentHP() const;
-    int getMaxHP() const;
-    Skill getSkill(int index) const;
-    std::string getSkillName(int index) const;      // Get the name of a specific skill
-    std::string getSkillType(int index) const;      // Get the type of a specific skill
-    int getSkillDamage(int index) const;            // Get the damage of a specific skill
-    int getSkillRemaining(int index) const;         // Get the remaining uses of a specific skill
-    int getSkillMax(int index) const;               // Get the maximum allowed uses of a specific skill
+private:
+    std::string pokemonName;       // Name of the Pokémon
+    std::string pokemonType;       // Type of the Pokémon
+    int maxHP;                     // Maximum HP of the Pokémon
+    int currentHP;                 // Current HP of the Pokémon
+    std::vector<Skill> pokemonSkills;  // List of skills the Pokémon has
+
+public:
+    // Constructor
+   Pokemon(const std::string& name, const std::string& type, int maxHP, const std::vector<Skill>& skills);
 
 
-    //Functions
-    int useSkill(int skillIndex, Pokemon& opponent); //uses skill on opponent
-    void takeDamage(int damage); //reduces HP
-    bool isFainted() const; //checks if HP <= 0
-    void printStats() const; //prints pokemon stats
+    // Getters
+    std::string getName() const;            // Get the name of the Pokémon
+    std::string getType() const;            // Get the type of the Pokémon
+    int getCurrentHP() const;               // Get the current HP
+    int getMaxHP() const;                   // Get the maximum HP
 
+    Skill getSkill(int index) const;        // Get a specific skill by index
 
-    
-    
+    std::string getSkillName(int index) const;      // Get the name of a skill
+    std::string getSkillType(int index) const;      // Get the type of a skill
+    int getSkillDamage(int index) const;            // Get the base damage of a skill
+    int getSkillRemaining(int index) const;         // Get the remaining tries of a skill
+    int getSkillMax(int index) const;               // Get the maximum tries of a skill
+
+    // Functions
+    std::string useSkill(int skillIndex, Pokemon& opponent);  // Use a skill on the opponent, returns effectiveness feedback
+    void takeDamage(int damage);           // Reduce HP by damage amount
+    bool isFainted() const;                // Check if Pokémon has fainted (HP <= 0)
+    void printStats() const;               // Print Pokémon stats (optional)
 };
 
-#endif //POKEMON_H
+#endif // POKEMON_H
