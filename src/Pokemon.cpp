@@ -11,6 +11,13 @@ Pokemon::Pokemon(const std::string& name, const std::string type, int maxHP, con
     std::string Pokemon::getType() const { return pokemonType; }
     int Pokemon::getCurrentHP() const {return currentHP; }
     int Pokemon::getMaxHP() const {return maxHP; }
+    Skill Pokemon::getSkill(int index) const {
+    if (index < 0 || index >= pokemonSkills.size()) {
+        throw std::out_of_range("Invalid skill index");
+    }
+    return pokemonSkills[index];
+}
+
 
     //Functions
     int Pokemon::useSkill(int skillIndex, Pokemon& opponent){

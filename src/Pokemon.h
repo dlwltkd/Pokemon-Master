@@ -26,6 +26,7 @@ class Pokemon {
     std::string getType() const;
     int getCurrentHP() const;
     int getMaxHP() const;
+    Skill getSkill(int index) const;
 
     //Functions
     int useSkill(int skillIndex, Pokemon& opponent); //uses skill on opponent
