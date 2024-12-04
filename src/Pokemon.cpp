@@ -3,8 +3,9 @@
 #include <algorithm> // For std::max
 
 // Constructor
+
 Pokemon::Pokemon(const std::string& name, const std::string& type, int maxHP, const std::vector<Skill>& skills)
-    : pokemonName(name), pokemonType(type), maxHP(maxHP), currentHP(maxHP), pokemonSkills(skills) {}
+    : pokemonName(name), pokemonType(type), maxHP(maxHP), currentHP(maxHP), pokemonSkills(skills), lastSkillSuccess(true) {} 
 
 
 // Get the name of the Pokémon
@@ -26,6 +27,9 @@ int Pokemon::getCurrentHP() const {
 int Pokemon::getMaxHP() const { 
     return maxHP; 
 }
+
+bool Pokemon::wasLastSkillSuccess() const { return lastSkillSuccess; }
+
 
 // Get a specific skill by index
 Skill Pokemon::getSkill(int index) const {
@@ -61,16 +65,30 @@ int Pokemon::getSkillMax(int index) const {
 }
 
 // Use a skill on the opponent, returns effectiveness feedback
+
 std::string Pokemon::useSkill(int skillIndex, Pokemon& opponent) {
+    // Calculate effectiveness regardless of skill success
+    char effectivenessChar = pokemonSkills[skillIndex].getEffectivenessChar(opponent.getType());
+
+    // Translate effectiveness character into feedback string
+    std::string feedback;
+    if (effectivenessChar == 'O') {
+        feedback = "It was super effective.";
+    } else if (effectivenessChar == 'X') {
+        feedback = "It was not very effective.";
+    } else {
+        feedback = "It was effective.";
+    }
+
     // Check if the skill can be performed
     if (skillIndex < 0 || skillIndex >= static_cast<int>(pokemonSkills.size()) || pokemonSkills[skillIndex].getRemainingTries() <= 0) {
         std::cout << pokemonName << " failed to perform " << pokemonSkills[skillIndex].getName() << ".\n" << std::endl;
-        return ""; // No feedback if the skill cannot be used
+        lastSkillSuccess = false; // Indicate failure
+        return feedback;
     }
 
-    // Get skill damage and determine effectiveness
+    // Skill can be performed
     int damage = pokemonSkills[skillIndex].getDamage(opponent.getType());
-    char effectivenessChar = pokemonSkills[skillIndex].getEffectivenessChar(opponent.getType());
 
     // Inflict damage on the opponent
     opponent.takeDamage(damage);
@@ -78,18 +96,11 @@ std::string Pokemon::useSkill(int skillIndex, Pokemon& opponent) {
     // Decrease skill usage count
     pokemonSkills[skillIndex].use();
 
-    // Translate effectiveness character into feedback string
-    std::string feedback;
-    if (effectivenessChar == 'O') {
-        feedback = "It was super effective.\n";
-    } else if (effectivenessChar == 'X') {
-        feedback = "It was not very effective.\n";
-    } else {
-        feedback = "It was effective.\n";
-    }
+    lastSkillSuccess = true; // Indicate success
 
     return feedback;
 }
+
 
 // Reduce HP by damage amount
 void Pokemon::takeDamage(int damage) {

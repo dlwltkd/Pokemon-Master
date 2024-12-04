@@ -12,10 +12,12 @@ private:
     int maxHP;                     // Maximum HP of the Pokémon
     int currentHP;                 // Current HP of the Pokémon
     std::vector<Skill> pokemonSkills;  // List of skills the Pokémon has
+    bool lastSkillSuccess;
 
 public:
     // Constructor
    Pokemon(const std::string& name, const std::string& type, int maxHP, const std::vector<Skill>& skills);
+    bool wasLastSkillSuccess() const;
 
 
     // Getters

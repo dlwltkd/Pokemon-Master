@@ -165,41 +165,37 @@ int main() {
     std::cin >> skillIndex;
 
     if (player1Turn) {
-        // Attempt to use the skill
-        std::string tempEffectiveness = player1->useSkill(skillIndex, *player2);
+        lastSkill1 = player1->getSkillName(skillIndex);
+        effectiveness1 = player1->useSkill(skillIndex, *player2);
 
-        if (tempEffectiveness.empty()) {
-            // Skill failed, do not update lastSkill1 or effectiveness1
-            // The failure message is already printed inside useSkill
-        } else {
-            // Skill succeeded, update lastSkill1 and effectiveness1
-            lastSkill1 = player1->getSkillName(skillIndex);
-            effectiveness1 = tempEffectiveness;
-
-            // Print feedback
+        if (player1->wasLastSkillSuccess()) {
+            // Skill was used successfully
             std::cout << player1->getName() << " used " << lastSkill1 << ".\n";
             std::cout << effectiveness1 << "\n";
+        } else {
+            // Skill failed
+            // Do not print "Pokemon used SkillName."
+            // The failure message is already printed in useSkill
         }
     } else {
-        // Attempt to use the skill
-        std::string tempEffectiveness = player2->useSkill(skillIndex, *player1);
+        lastSkill2 = player2->getSkillName(skillIndex);
+        effectiveness2 = player2->useSkill(skillIndex, *player1);
 
-        if (tempEffectiveness.empty()) {
-            // Skill failed, do not update lastSkill2 or effectiveness2
-            // The failure message is already printed inside useSkill
-        } else {
-            // Skill succeeded, update lastSkill2 and effectiveness2
-            lastSkill2 = player2->getSkillName(skillIndex);
-            effectiveness2 = tempEffectiveness;
-
-            // Print feedback
+        if (player2->wasLastSkillSuccess()) {
+            // Skill was used successfully
             std::cout << player2->getName() << " used " << lastSkill2 << ".\n";
             std::cout << effectiveness2 << "\n";
+        } else {
+            // Skill failed
+            // Do not print "Pokemon used SkillName."
+            // The failure message is already printed in useSkill
         }
     }
 
     player1Turn = !player1Turn;  // Switch turns
 }
+
+
 
 
     // Step 3: Print Result
