@@ -64,7 +64,7 @@ int Pokemon::getSkillMax(int index) const {
 std::string Pokemon::useSkill(int skillIndex, Pokemon& opponent) {
     // Check if the skill can be performed
     if (skillIndex < 0 || skillIndex >= static_cast<int>(pokemonSkills.size()) || pokemonSkills[skillIndex].getRemainingTries() <= 0) {
-        std::cout << pokemonName << " failed to perform " << pokemonSkills[skillIndex].getName() << ".\n";
+        std::cout << pokemonName << " failed to perform " << pokemonSkills[skillIndex].getName() << ".\n" << std::endl;
         return ""; // No feedback if the skill cannot be used
     }
 
@@ -101,9 +101,4 @@ bool Pokemon::isFainted() const {
     return currentHP <= 0;
 }
 
-// Print Pokémon stats (optional)
-void Pokemon::printStats() const {
-    std::cout << "Name: " << pokemonName 
-              << ", Type: " << pokemonType 
-              << ", HP: " << currentHP << "/" << maxHP << "\n";
-}
+

@@ -10,8 +10,8 @@
 void printBattlePage(const Pokemon& player1, const Pokemon& player2, bool player1Turn,
                      const std::string& lastSkill1 = "-", const std::string& lastSkill2 = "-",
                      const std::string& effectiveness1 = "", const std::string& effectiveness2 = "") {
-    const int COL_WIDTH = 29;  // Adjusted Column width
-    const int TOTAL_WIDTH = 61;  // Adjusted Total width of the horizontal line
+    const int COL_WIDTH = 29;  
+    const int TOTAL_WIDTH = 61;  
 
     // Clean up effectiveness strings (remove any extra newlines)
     std::string eff1 = effectiveness1;
@@ -158,30 +158,49 @@ int main() {
     std::string effectiveness1 = "", effectiveness2 = "";
 
     while (!player1->isFainted() && !player2->isFainted()) {
-        printBattlePage(*player1, *player2, player1Turn, lastSkill1, lastSkill2, effectiveness1, effectiveness2);
+    printBattlePage(*player1, *player2, player1Turn, lastSkill1, lastSkill2, effectiveness1, effectiveness2);
 
-        std::cout << "Choose a skill (0~3): ";
-        int skillIndex;
-        std::cin >> skillIndex;
+    std::cout << "Choose a skill (0~3): ";
+    int skillIndex;
+    std::cin >> skillIndex;
 
-        if (player1Turn) {
+    if (player1Turn) {
+        // Attempt to use the skill
+        std::string tempEffectiveness = player1->useSkill(skillIndex, *player2);
+
+        if (tempEffectiveness.empty()) {
+            // Skill failed, do not update lastSkill1 or effectiveness1
+            // The failure message is already printed inside useSkill
+        } else {
+            // Skill succeeded, update lastSkill1 and effectiveness1
             lastSkill1 = player1->getSkillName(skillIndex);
-            effectiveness1 = player1->useSkill(skillIndex, *player2);
+            effectiveness1 = tempEffectiveness;
 
             // Print feedback
             std::cout << player1->getName() << " used " << lastSkill1 << ".\n";
             std::cout << effectiveness1 << "\n";
+        }
+    } else {
+        // Attempt to use the skill
+        std::string tempEffectiveness = player2->useSkill(skillIndex, *player1);
+
+        if (tempEffectiveness.empty()) {
+            // Skill failed, do not update lastSkill2 or effectiveness2
+            // The failure message is already printed inside useSkill
         } else {
+            // Skill succeeded, update lastSkill2 and effectiveness2
             lastSkill2 = player2->getSkillName(skillIndex);
-            effectiveness2 = player2->useSkill(skillIndex, *player1);
+            effectiveness2 = tempEffectiveness;
 
             // Print feedback
             std::cout << player2->getName() << " used " << lastSkill2 << ".\n";
             std::cout << effectiveness2 << "\n";
         }
-
-        player1Turn = !player1Turn;  // Switch turns
     }
+
+    player1Turn = !player1Turn;  // Switch turns
+}
+
 
     // Step 3: Print Result
     std::cout << std::string(63, '=') << "\n";
